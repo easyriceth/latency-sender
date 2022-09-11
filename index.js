@@ -12,10 +12,14 @@
         const axios = require('axios').default
 
         const ping = require('ping')
-        const { time, packetLoss } = await ping.promise.probe(TARGET_HOST)
 
-        await axios.post(STAT_HOST, { time, packetLoss: Number(packetLoss.replace('%', '')), serverName: SERVER_NAME })
-        console.log('Data : ', { time, packetLoss })
+        try {
+            const { time, packetLoss } = await ping.promise.probe(TARGET_HOST)
+            await axios.post(STAT_HOST, { time, packetLoss: Number(packetLoss.replace('%', '')), serverName: SERVER_NAME })
+            console.log('Data : ', { time, packetLoss })
+        } catch (err) {
+            console.log(err)
+        }
         await setTimeout(PULLING_TIME)
     }
 })()
